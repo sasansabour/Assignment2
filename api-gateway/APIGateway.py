@@ -33,7 +33,7 @@ def user_service(user_id=None):
     return jsonify(response.json()), response.status_code
 
 
-@app.route('/order', methods=['GET', 'POST', 'PUT'])
+@app.route('/order', methods=['GET', 'POST'])
 @app.route('/order/<order_id>', methods=['PUT'])
 def order_service(order_id=None):
     """Forward requests to the Order Microservice"""
