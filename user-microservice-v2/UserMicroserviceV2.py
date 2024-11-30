@@ -17,7 +17,8 @@ db = client['user_database']  # The database
 users_collection = db['users']  # Collection for user data
 
 # RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=60, retry_delay=5, socket_timeout=60))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=120, retry_delay=5, socket_timeout=60,
+        automatic_reconnect=True))
 channel = connection.channel()
 
 # Declare a queue for the event
