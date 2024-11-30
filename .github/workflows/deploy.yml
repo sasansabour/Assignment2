@@ -29,6 +29,13 @@ jobs:
           sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
+      - name: Add server SSH key to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "35.223.205.182 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDLXbaXUnLDOeHW0liJdrLdIoVPNCHH7j2mt2O6urBvT7Mric8pXYqTMicfCxx6UmNxDpOiCGJJ6gtNin8N0cJKrPhoQIc1IF/r5x3C9caU2HQ+9G9rYSba/KBuiFR+bPntWdyz5hg8Hd2gFasBg4mxBRmgZ46d7NEtaQlnCefm2QrTF1rpzhQtm+vMOfKVxdVai4WooWGhPEYag11YNTIx2ZbaG7UShX6igZK+CJLK1pd2zd0FCUupoMwBa4XlIHFlAHoheZ++Tuj8flPIaNaXN5m0C2P3oPoUFkKmewgLiAvNuClqpYPUxFzoHGFgX6FJAYgwNxNHzmEyxizv6GbCRAOtwbPPMG6i4G3v/WaBtVkwxkVdy+R/m4mSMNPUfrvLC5Gav51HkcXsr3STnMhTprLk2kcqPGnYpzXLI31nT/QrCXN4dhv9HyJkKBRQXVfSUixq75tq2mJJbcizKw8H6qilNlxX6CqtE/18+Y9jgBLStVf3m8BSuGvEQWIBjAM=" >> ~/.ssh/known_hosts
+          echo "35.223.205.182 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFxnnaBTlPujsP/NjB7HlONoeUyjCMRkI3vBOxSlceezYMJAQzoM/j3zbU5kNjavUt7BNVEy4UcfGMDuwaTEoMc=" >> ~/.ssh/known_hosts
+          echo "35.223.205.182 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk26jJ9vLoKmIIcqRthH4vhiFBya+bndVFxHxFdPjZ0" >> ~/.ssh/known_hosts
+
       - name: Build and push Docker images
         run: |
           docker-compose build
