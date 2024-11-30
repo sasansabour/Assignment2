@@ -18,7 +18,8 @@ db = client['order_database']  # The database
 orders_collection = db['orders']  # Collection for orders data
 
 # RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=60, retry_delay=5, socket_timeout=60))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=120, retry_delay=5, socket_timeout=60,
+        automatic_reconnect=True))
 channel = connection.channel()
 
 # Declare the queue where user update events will be published
