@@ -27,7 +27,7 @@ def user_service(user_id=None):
 
     response = requests.request(
         method=request.method,
-        url=user_service_url,#f"http://localhost:5001/{path}",
+        url=user_service_url,
         json=request.json
     )
     return jsonify(response.json()), response.status_code
@@ -43,7 +43,7 @@ def order_service(order_id=None):
         response = requests.get("http://35.223.205.182:5002/order", params=data)
     else:
         data = request.json
-        order_service_url = f"http://35.223.205.182:5003/order/{order_id}" if order_id else f"http://35.223.205.182:5003/order"
+        order_service_url = f"http://35.223.205.182:5002/order/{order_id}" if order_id else f"http://35.223.205.182:5002/order"
         response = requests.request(method=request.method,url=order_service_url,json=data)
     return jsonify(response.json()), response.status_code
 
