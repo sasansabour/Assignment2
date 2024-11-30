@@ -1,0 +1,42 @@
+services:
+  rabbitmq:
+    image: "rabbitmq:management"
+    hostname: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "5000:5000"
+  user-microservice-v1:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./user-microservice-v1
+    ports:
+      - "5001:5001"
+  user-microservice-v2:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./user-microservice-v2
+    ports:
+      - "5003:5003"
+  order-microservice:
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    build: ./order-microservice
+    ports:
+      - "5002:5002"
+
+  mongodb:
+    image: "mongo"
+    ports:
+      - "27017:27017"
