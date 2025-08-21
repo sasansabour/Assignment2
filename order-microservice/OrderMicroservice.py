@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -8,17 +9,20 @@ import threading
 
 app = Flask(__name__)
 
+MONGO_USER = os.getenv('MONGO_USER')
+MONGO_PASSWORD = os.getenv('MONGO_PASSWORD')
+MONGO_CLUSTER = os.getenv('MONGO_CLUSTER')
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'rabbitmq')
+
 orders = {}
 
-password = "sS%4020242024"
-#escaped_password = urllib.parse.quote_plus(password)
-uri = f"mongodb+srv://sasansabour:{password}@cluster0.tuzcj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+uri = f"mongodb+srv://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['order_database']  # The database
 orders_collection = db['orders']  # Collection for orders data
 
 # RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=120, retry_delay=5, socket_timeout=60,
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST,heartbeat=120, retry_delay=5, socket_timeout=60,
         automatic_reconnect=True))
 channel = connection.channel()
 
@@ -51,9 +55,7 @@ def start_event_listener():
 
 @app.route('/order', methods=['POST'])
 def create_order():
-    print('hi')
     data = request.json
-    print(data)
     order_id = data['order_id']
     #orders[order_id] = data
     orders_collection.insert_one(data)
@@ -74,9 +76,7 @@ def update_order_status(order_id):
 
 @app.route('/order', methods=['GET'])
 def get_orders():
-    print(request.args)
     status = request.args.get('status')
-    print(status)
     orderStatus = orders_collection.find({'status': status})
     orders_list = []
     for order in orderStatus:
