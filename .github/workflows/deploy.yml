@@ -46,8 +46,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan 35.223.205.182 >> ~/.ssh/known_hosts
+          ssh-keyscan ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
           
       - name: Deploy to server
         run: |
-          ssh sasansabour@35.223.205.182 "docker-compose down && docker-compose up -d"
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "docker-compose down && docker-compose up -d"
