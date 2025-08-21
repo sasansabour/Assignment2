@@ -1,3 +1,4 @@
+import os
 import random
 from flask import Flask, request, jsonify
 import requests
@@ -5,6 +6,10 @@ import json
 
 
 app = Flask(__name__)
+
+USER_SERVICE_V1 = os.getenv('USER_SERVICE_V1')
+USER_SERVICE_V2 = os.getenv('USER_SERVICE_V2')
+ORDER_SERVICE = os.getenv('ORDER_SERVICE')
 
 # Configuration: Read P (percentage of traffic to v1) from a configuration file or environment variable
 with open('config.json') as config_file:
@@ -20,15 +25,10 @@ def user_service(user_id=None):
     # Randomly route P% of traffic to v1 and (100 - P)% to v2
     route_to_v1 = random.randint(1, 100) <= P
 
-    #if route_to_v1:
-    #    user_service_url = f"http://127.0.0.1:5001/user"
-    #else:
-    #    user_service_url = f"http://127.0.0.1:5003/user"
-
     if route_to_v1:
-        user_service_url = f"http://35.223.205.182:5001/user/{user_id}" if user_id else f"http://35.223.205.182:5001/user"
+        user_service_url = f"{USER_SERVICE_V1}/user/{user_id}" if user_id else f"{USER_SERVICE_V1}/user"
     else:
-        user_service_url = f"http://35.223.205.182:5003/user/{user_id}" if user_id else f"http://35.223.205.182:5003/user"
+        user_service_url = f"{USER_SERVICE_V2}/user/{user_id}" if user_id else f"{USER_SERVICE_V2}/user"
 
     response = requests.request(
         method=request.method,
@@ -41,13 +41,12 @@ def user_service(user_id=None):
 @app.route('/order', methods=['GET', 'POST', 'PUT'])
 def order_service():
     """Forward requests to the Order Microservice"""
-    print("hi")
     if request.method == 'GET':
         data = request.args.to_dict()
-        response = requests.get("http://35.223.205.182:5002/order", params=data)
+        response = requests.get(f"{ORDER_SERVICE}/order", params=data)
     else:
         data = request.json
-        response = requests.request(method=request.method,url=f"http://35.223.205.182:5002/order",json=data)
+        response = requests.request(method=request.method,url=f"{ORDER_SERVICE}/order",json=data)
     return jsonify(response.json()), response.status_code
 
 if __name__ == '__main__':
