@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -9,15 +10,18 @@ app = Flask(__name__)
 
 users = {}
 
-password = "sS%4020242024"
-#escaped_password = urllib.parse.quote_plus(password)
-uri = f"mongodb+srv://sasansabour:{password}@cluster0.tuzcj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+MONGO_USER = os.getenv('MONGO_USER')
+MONGO_PASSWORD = os.getenv('MONGO_PASSWORD')
+MONGO_CLUSTER = os.getenv('MONGO_CLUSTER')
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'rabbitmq')
+
+uri = f"mongodb+srv://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['user_database']  # The database
 users_collection = db['users']  # Collection for user data
 
 # RabbitMQ connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq',heartbeat=120, retry_delay=5, socket_timeout=60,
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=RABBITMQ_HOST,heartbeat=120, retry_delay=5, socket_timeout=60,
         automatic_reconnect=True))
 channel = connection.channel()
 
