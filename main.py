@@ -2,9 +2,6 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import urllib.parse
 
-password = "sS@20242024"
-escaped_password = urllib.parse.quote_plus(password)
-uri = f"mongodb+srv://sasansabour:{escaped_password}@cluster0.tuzcj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Access the user and order databases
 user_db = client["user_database"]
@@ -71,6 +68,5 @@ def synchronize_user_data(user_id, new_email=None, new_address=None):
 
 if __name__ == '__main__':
     print_hi()
-    #synchronize_user_data("user123", new_email="new_email@example.com", new_address="456 Elm St, Cityville")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
