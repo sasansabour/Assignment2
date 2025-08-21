@@ -68,5 +68,3 @@ def synchronize_user_data(user_id, new_email=None, new_address=None):
 
 if __name__ == '__main__':
     print_hi()
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
